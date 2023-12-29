@@ -3,7 +3,7 @@
 ## ZiLOG Z80 CPU emulator ##
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Features:
+## Features: ##
 ---------
 
 - precise opcode emulation (documented & undocumented)
