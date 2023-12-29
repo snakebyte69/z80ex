@@ -1,6 +1,6 @@
 # Z80Ex from https://sourceforge.net/projects/z80ex/
 
-## ZiLOG Z80 CPU emulator
+## ZiLOG Z80 CPU emulator ##
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Features:
