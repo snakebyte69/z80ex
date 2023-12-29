@@ -15,7 +15,7 @@ Features:
 - disassembler included  
 
 
-### Building and installing:
+Building and installing:
 --------------------------------------------------------
 
 to build and install using CMake build system, refer to INSTALL.cmake
@@ -25,7 +25,7 @@ to build and install using GNU Make, refer to INSTALL.gmake
 % make
 % make install
 
-### Usage intro:
+Usage intro:
 ------------
 
 emulator:
