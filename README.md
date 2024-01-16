@@ -21,7 +21,7 @@ to build and install using CMake build system, refer to INSTALL.cmake
 to build and install using GNU Make, refer to INSTALL.gmake
 
 # macOS #
-- % make
+- % sudo make
 - % sudo make install
 
 Usage intro:
