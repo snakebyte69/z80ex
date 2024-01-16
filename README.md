@@ -22,7 +22,7 @@ to build and install using GNU Make, refer to INSTALL.gmake
 
 # macOS #
 - % make
-- % make install
+- % sudo make install
 
 Usage intro:
 ------------
