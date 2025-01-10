@@ -8,8 +8,8 @@
 INSTALL_PREFIX := /usr/local
 TOOLS_PREFIX :=
 
-CC := $(TOOLS_PREFIX)gcc 
-LINKER := $(TOOLS_PREFIX)gcc
+CC := $(TOOLS_PREFIX)gcc-14
+LINKER := $(TOOLS_PREFIX)gcc-14
 AR := $(TOOLS_PREFIX)ar
 
 ALL_CFLAGS := -fPIC -fno-common -ansi -pedantic -Wall -pipe -O2 -I. -I./include 
