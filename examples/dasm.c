@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <z80ex/z80ex_dasm.h>
+#include <z80ex_dasm.h>
 
 Z80EX_BYTE *data=NULL;
 int data_len=0;
