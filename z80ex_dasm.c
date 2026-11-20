@@ -10,7 +10,6 @@
  
 #include <stdlib.h>
 #include <string.h>
-#define __USE_ISOC99
 #include <stdio.h>
 #include <stdarg.h>
  
@@ -140,8 +139,10 @@ LIB_EXPORT int z80ex_dasm(char *output, int output_size, unsigned flags, int *t_
 				
 				case '$':
 				case '%':
-					if(!have_disp) disp_u = readbyte_cb(addr++,user_data);
-					bytes++;
+					if (!have_disp) {
+						disp_u = readbyte_cb(addr++, user_data);
+						bytes++;
+					}
 					disp = (disp_u & 0x80)? -(((~disp_u) & 0x7f)+1): disp_u;				
 					
 					if(*mpos == '$')

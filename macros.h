@@ -117,7 +117,7 @@
 for using outside of certain opcode execution)*/
 #define TSTATES(amount) \
 {\
-	int nn;\
+	unsigned nn;\
 	if(cpu->tstate_cb == NULL) { \
 		cpu->tstate += amount; \
 	} \
@@ -197,7 +197,7 @@ for using outside of certain opcode execution)*/
 #define AND(value)\
 {\
 	A &= (value);\
-	F = FLAG_H | sz53p_table[A];\
+	F = (Z80EX_BYTE)(FLAG_H | sz53p_table[A]);\
 }
 
 #define ADC(a, value)\
@@ -206,10 +206,10 @@ for using outside of certain opcode execution)*/
 	Z80EX_BYTE lookup = ( (       A & 0x88 ) >> 3 ) | \
 			    ( ( (value) & 0x88 ) >> 2 ) | \
 			    ( ( adctemp & 0x88 ) >> 1 );  \
-	A=adctemp;\
-	F = ( adctemp & 0x100 ? FLAG_C : 0 ) |\
+	A=(Z80EX_BYTE)adctemp;\
+	F = (Z80EX_BYTE)(( adctemp & 0x100 ? FLAG_C : 0 ) |\
 		halfcarry_add_table[lookup & 0x07] | overflow_add_table[lookup >> 4] |\
-		sz53_table[A];\
+		sz53_table[A]);\
 }
 
 #define ADC16(hl, value)\
@@ -219,12 +219,12 @@ for using outside of certain opcode execution)*/
 			    ( (   (value) & 0x8800 ) >> 10 ) | \
 			    ( ( add16temp & 0x8800 ) >>  9 );  \
 	MEMPTR=hl+1;\
-	HL = add16temp;\
-	F = ( add16temp & 0x10000 ? FLAG_C : 0 )|\
+	HL = (Z80EX_WORD)add16temp;\
+	F = (Z80EX_BYTE)(( add16temp & 0x10000 ? FLAG_C : 0 )|\
 		overflow_add_table[lookup >> 4] |\
 		( H & ( FLAG_3 | FLAG_5 | FLAG_S ) ) |\
 		halfcarry_add_table[lookup&0x07]|\
-		( HL ? 0 : FLAG_Z );\
+		( HL ? 0 : FLAG_Z ));\
 }
 
 #define ADD(a, value)\
@@ -233,10 +233,10 @@ for using outside of certain opcode execution)*/
 	Z80EX_BYTE lookup = ( (       A & 0x88 ) >> 3 ) | \
 			    ( ( (value) & 0x88 ) >> 2 ) | \
 			    ( ( addtemp & 0x88 ) >> 1 );  \
-	A=addtemp;\
-	F = ( addtemp & 0x100 ? FLAG_C : 0 ) |\
+	A=(Z80EX_BYTE)addtemp;\
+	F = (Z80EX_BYTE)(( addtemp & 0x100 ? FLAG_C : 0 ) |\
 		halfcarry_add_table[lookup & 0x07] | overflow_add_table[lookup >> 4] |\
-		sz53_table[A];\
+		sz53_table[A]);\
 }
 
 #define ADD16(value1,value2)\
@@ -246,22 +246,22 @@ for using outside of certain opcode execution)*/
 			    ( (  (value2) & 0x0800 ) >> 10 ) | \
 			    ( ( add16temp & 0x0800 ) >>  9 );  \
 	MEMPTR=value1+1;\
-	(value1) = add16temp;\
-	F = ( F & ( FLAG_V | FLAG_Z | FLAG_S ) ) |\
+	(value1) = (Z80EX_WORD)add16temp;\
+	F = (Z80EX_BYTE)(( F & ( FLAG_V | FLAG_Z | FLAG_S ) ) |\
 		( add16temp & 0x10000 ? FLAG_C : 0 )|\
 		( ( add16temp >> 8 ) & ( FLAG_3 | FLAG_5 ) ) |\
-		halfcarry_add_table[lookup];\
+		halfcarry_add_table[lookup]);\
 }
 
 #define BIT( bit, value ) \
 { \
-	F = ( F & FLAG_C ) | FLAG_H | sz53p_table[(value) & (0x01 << (bit))] | ((value) & 0x28); \
+	F = (Z80EX_BYTE)(( F & FLAG_C ) | FLAG_H | sz53p_table[(value) & (0x01 << (bit))] | ((value) & 0x28)); \
 }
 
 /*BIT n,(IX+d/IY+d) and BIT n,(HL)*/
 #define BIT_MPTR( bit, value) \
 { \
-	F = ( F & FLAG_C ) | FLAG_H | (sz53p_table[(value) & (0x01 << (bit))] & 0xD7) | ((MEMPTRh) & 0x28); \
+	F = (Z80EX_BYTE)(( F & FLAG_C ) | FLAG_H | (sz53p_table[(value) & (0x01 << (bit))] & 0xD7) | ((MEMPTRh) & 0x28)); \
 }
 
 #define CALL(addr, wr1, wr2) \
@@ -277,18 +277,18 @@ for using outside of certain opcode execution)*/
 	Z80EX_BYTE lookup = ( (       A & 0x88 ) >> 3 ) | \
 			    ( ( (value) & 0x88 ) >> 2 ) | \
 			    ( (  cptemp & 0x88 ) >> 1 );  \
-	F = ( cptemp & 0x100 ? FLAG_C : ( cptemp ? 0 : FLAG_Z ) ) | FLAG_N |\
+	F = (Z80EX_BYTE)(( cptemp & 0x100 ? FLAG_C : ( cptemp ? 0 : FLAG_Z ) ) | FLAG_N |\
 		halfcarry_sub_table[lookup & 0x07] |\
 			overflow_sub_table[lookup >> 4] |\
 			( value & ( FLAG_3 | FLAG_5 ) ) |\
-			( cptemp & FLAG_S );\
+			( cptemp & FLAG_S ));\
 }
 
 #define DEC(value)\
 {\
-	F = ( F & FLAG_C ) | ( (value)&0x0f ? 0 : FLAG_H ) | FLAG_N;\
+	F = (Z80EX_BYTE)(( F & FLAG_C ) | ( (value)&0x0f ? 0 : FLAG_H ) | FLAG_N);\
 	(value)--;\
-	F |= ( (value)==0x7f ? FLAG_V : 0 ) | sz53_table[value];\
+	F |= (Z80EX_BYTE)( ( (value)==0x7f ? FLAG_V : 0 ) | sz53_table[value]);\
 }
 
 #define DEC16(value)\
@@ -299,8 +299,8 @@ for using outside of certain opcode execution)*/
 #define INC(value)\
 {\
 	(value)++;\
-	F = ( F & FLAG_C ) | ( (value)==0x80 ? FLAG_V : 0 ) |\
-		( (value)&0x0f ? 0 : FLAG_H ) | sz53_table[(value)];\
+	F = (Z80EX_BYTE)(( F & FLAG_C ) | ( (value)==0x80 ? FLAG_V : 0 ) |\
+		( (value)&0x0f ? 0 : FLAG_H ) | sz53_table[(value)]);\
 }
 
 #define INC16(value)\
@@ -367,7 +367,7 @@ for using outside of certain opcode execution)*/
 #define OR(value)\
 {\
 	A |= (value);\
-	F = sz53p_table[A];\
+	F = (Z80EX_BYTE)sz53p_table[A];\
 }
 
 #define OUT(port,reg, wr) \
@@ -387,7 +387,7 @@ for using outside of certain opcode execution)*/
 #define IN(reg,port,rd) \
 {\
 	READ_PORT(reg,port,rd); \
-	F = ( F & FLAG_C) | sz53p_table[(reg)];\
+	F = (Z80EX_BYTE)(( F & FLAG_C) | sz53p_table[(reg)]);\
 	MEMPTR=port+1;\
 }
 
@@ -402,7 +402,7 @@ for using outside of certain opcode execution)*/
 {\
 	Z80EX_BYTE val; \
 	READ_PORT(val, port, rd); \
-	F = ( F & FLAG_C) | sz53p_table[(val)];\
+	F = (Z80EX_BYTE)(( F & FLAG_C) | sz53p_table[(val)]);\
 	MEMPTR=port+1;\
 }
 
@@ -432,28 +432,28 @@ for using outside of certain opcode execution)*/
 #define RL(value)\
 {\
 	Z80EX_BYTE rltemp = (value); \
-	(value) = ( (value)<<1 ) | ( F & FLAG_C );\
-	F = ( rltemp >> 7 ) | sz53p_table[(value)];\
+	(value) = (Z80EX_BYTE)( ( (value)<<1 ) | ( F & FLAG_C ) );\
+	F = (Z80EX_BYTE)(( rltemp >> 7 ) | sz53p_table[(value)]);\
 }
 
 #define RLC(value)\
 {\
-	(value) = ( (value)<<1 ) | ( (value)>>7 );\
-	F = ( (value) & FLAG_C ) | sz53p_table[(value)];\
+	(value) = (Z80EX_BYTE)( ( (value)<<1 ) | ( (value)>>7 ) );\
+	F = (Z80EX_BYTE)(( (value) & FLAG_C ) | sz53p_table[(value)]);\
 }
 
 #define RR(value)\
 {\
 	Z80EX_BYTE rrtemp = (value); \
-	(value) = ( (value)>>1 ) | ( F << 7 );\
-	F = ( rrtemp & FLAG_C ) | sz53p_table[(value)];\
+	(value) = (Z80EX_BYTE)( ( (value)>>1 ) | ( F << 7 ) );\
+	F = (Z80EX_BYTE)(( rrtemp & FLAG_C ) | sz53p_table[(value)]);\
 }
 
 #define RRC(value)\
 {\
-	F = (value) & FLAG_C;\
-	(value) = ( (value)>>1 ) | ( (value)<<7 );\
-	F |= sz53p_table[(value)];\
+	F = (Z80EX_BYTE)((value) & FLAG_C);\
+	(value) = (Z80EX_BYTE)( ( (value)>>1 ) | ( (value)<<7 ) );\
+	F |= (Z80EX_BYTE)sz53p_table[(value)];\
 }
 
 #define RST(value, w1, w2)\
@@ -469,10 +469,10 @@ for using outside of certain opcode execution)*/
 	Z80EX_BYTE lookup = ( (       A & 0x88 ) >> 3 ) | \
 			    ( ( (value) & 0x88 ) >> 2 ) | \
 			    ( ( sbctemp & 0x88 ) >> 1 );  \
-	A=sbctemp;\
-	F = ( sbctemp & 0x100 ? FLAG_C : 0 ) | FLAG_N |\
+	A=(Z80EX_BYTE)sbctemp;\
+	F = (Z80EX_BYTE)(( sbctemp & 0x100 ? FLAG_C : 0 ) | FLAG_N |\
 	halfcarry_sub_table[lookup & 0x07] | overflow_sub_table[lookup >> 4] |\
-	sz53_table[A];\
+	sz53_table[A]);\
 }
 
 #define SBC16(hl, value)\
@@ -482,40 +482,40 @@ for using outside of certain opcode execution)*/
 			    ( (   (value) & 0x8800 ) >> 10 ) | \
 			    ( ( sub16temp & 0x8800 ) >>  9 );  \
 	MEMPTR=hl+1;\
-	HL = sub16temp;\
-	F = ( sub16temp & 0x10000 ? FLAG_C : 0 ) |\
+	HL = (Z80EX_WORD)sub16temp;\
+	F = (Z80EX_BYTE)(( sub16temp & 0x10000 ? FLAG_C : 0 ) |\
 	FLAG_N | overflow_sub_table[lookup >> 4] |\
 	( H & ( FLAG_3 | FLAG_5 | FLAG_S ) ) |\
 	halfcarry_sub_table[lookup&0x07] |\
-	( HL ? 0 : FLAG_Z) ;\
+	( HL ? 0 : FLAG_Z)) ;\
 }
 
 #define SLA(value)\
 {\
-	F = (value) >> 7;\
+	F = (Z80EX_BYTE)((value) >> 7);\
 	(value) <<= 1;\
-	F |= sz53p_table[(value)];\
+	F |= (Z80EX_BYTE)sz53p_table[(value)];\
 }
 
 #define SLL(value)\
 {\
-	F = (value) >> 7;\
-	(value) = ( (value) << 1 ) | 0x01;\
-	F |= sz53p_table[(value)];\
+	F = (Z80EX_BYTE)((value) >> 7);\
+	(value) = (Z80EX_BYTE)( ( (value) << 1 ) | 0x01 );\
+	F |= (Z80EX_BYTE)sz53p_table[(value)];\
 }
 
 #define SRA(value)\
 {\
-	F = (value) & FLAG_C;\
-	(value) = ( (value) & 0x80 ) | ( (value) >> 1 );\
-	F |= sz53p_table[(value)];\
+	F = (Z80EX_BYTE)((value) & FLAG_C);\
+	(value) = (Z80EX_BYTE)( ( (value) & 0x80 ) | ( (value) >> 1 ) );\
+	F |= (Z80EX_BYTE)sz53p_table[(value)];\
 }
 
 #define SRL(value)\
 {\
-	F = (value) & FLAG_C;\
+	F = (Z80EX_BYTE)((value) & FLAG_C);\
 	(value) >>= 1;\
-	F |= sz53p_table[(value)];\
+	F |= (Z80EX_BYTE)sz53p_table[(value)];\
 }
 
 #define SUB(value)\
@@ -524,16 +524,16 @@ for using outside of certain opcode execution)*/
 	Z80EX_BYTE lookup = ( (       A & 0x88 ) >> 3 ) | \
 			    ( ( (value) & 0x88 ) >> 2 ) | \
 			    (  (subtemp & 0x88 ) >> 1 );  \
-	A=subtemp;\
-	F = ( subtemp & 0x100 ? FLAG_C : 0 ) | FLAG_N |\
+	A=(Z80EX_BYTE)subtemp;\
+	F = (Z80EX_BYTE)(( subtemp & 0x100 ? FLAG_C : 0 ) | FLAG_N |\
 	halfcarry_sub_table[lookup & 0x07] | overflow_sub_table[lookup >> 4] |\
-	sz53_table[A];\
+	sz53_table[A]);\
 }
 
 #define XOR(value)\
 {\
 	A ^= (value);\
-	F = sz53p_table[A];\
+	F = (Z80EX_BYTE)sz53p_table[A];\
 }
 
 #define RRD(rd, wr) \

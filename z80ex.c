@@ -127,7 +127,7 @@ LIB_EXPORT void z80ex_reset(Z80EX_CONTEXT *cpu)
 {
 	PC=0x0000; IFF1=IFF2=0; IM=IM0;
 	AF=SP=BC=DE=HL=IX=IY=AF_=BC_=DE_=HL_=0xffff;
-	I=R=R7=0;
+	I=0; R=0; R7=0;
 	cpu->noint_once=0; cpu->reset_PV_on_int=0; cpu->halted=0;
 	cpu->int_vector_req=0;
 	cpu->doing_opcode=0;
